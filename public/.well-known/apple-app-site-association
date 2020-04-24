@@ -1,0 +1,17 @@
+{
+  "applinks": {
+      "details": [
+           {
+             "appIDs": [ "FRK65ZLPLW.us.macrotechsolutions.syncfastapp"],
+             "components": [
+               {
+                  "/": "/client",
+               }
+             ]
+           }
+       ]
+   },
+   "webcredentials": {
+      "apps": [ "FRK65ZLPLW.us.macrotechsolutions.syncfastapp" ]
+   }
+}
