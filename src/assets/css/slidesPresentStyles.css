@@ -1,0 +1,208 @@
+body {
+    margin: 0;
+}
+
+iframe {
+    width: 100vh;
+    height: 100vh;
+}
+
+#presImg {
+    height: auto;
+    width: 60vw;
+}
+
+#presImg2 {
+    height: 100vh;
+    width: auto;
+}
+
+.nav {
+    background-color: black;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 15px;
+}
+
+#userPic {
+    border-radius: 50%;
+    height: 50px;
+    margin-left: 10px;
+}
+
+.content {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    height: 85vh;
+}
+
+.buttons {
+    height: 9%;
+    margin: 0 5px;
+}
+
+.buttons2 {
+    display: flex;
+    justify-content: left;
+    width: 90vw;
+    height: 5%;
+    margin: 0 5px;
+}
+
+.arrow{
+    border: none;
+    background-color: rgb(0, 123, 255);
+    border: solid black;
+    border-radius: 30px;
+    padding:5px;
+    margin-top: 20px;
+    color: white;
+    font-weight: bold;
+}
+
+#logo {
+    height: 100px;
+}
+
+.right {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+
+#signOut {
+    height: 25px;
+    background-image: rgb(0, 123, 255);
+    font-family: 'karla', sans-serif;
+    border-radius: 22px;
+    border: none;
+}
+
+.break {
+    height: 5vh;
+}
+
+#access {
+    font-size: 20px;
+    text-align: center;
+    color: white;
+    margin: 0;
+    font-family: 'karla', sans-serif;
+}
+
+.button {
+    border: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: black;
+    font-weight: bold;
+}
+
+.button2 {
+    border-radius: 22px;
+    border: none;
+    background-color: rgb(0, 123, 255);
+    border: solid black;
+    border-radius: 25px;
+    margin-top: 20px;
+    color: white;
+    font-weight: bold;
+}
+
+.button3 {
+    border-radius: 22px;
+    border: none;
+    background-color: rgb(0, 123, 255);
+    border: solid black;
+    border-radius: 25px;
+    /* margin-top: 20px; */
+    /* color: white; */
+    font-weight: bold;
+}
+
+.center {
+    display: flex;
+    flex-flow: row;
+    background-color: black;
+    color: green;
+}
+
+#change {
+    background-color: white;
+    color: black;
+    border-radius: 22px;
+    border: none;
+    margin-left: 10px;
+}
+
+#change:hover {
+    cursor: pointer;
+    background-color: rgb(255, 227, 227);
+}
+
+
+/* Dropdown Button */
+
+.dropbtn {
+    background-color: rgb(0, 123, 255);
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+
+/* Dropdown button on hover & focus */
+
+.dropbtn:hover,
+.dropbtn:focus {
+    background-color: rgb(0, 123, 255);
+}
+
+
+/* The container <div> - needed to position the dropdown content */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+
+/* Dropdown Content (Hidden by Default) */
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+
+/* Links inside the dropdown */
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+
+/* Change color of dropdown links on hover */
+
+.dropdown-content a:hover {
+    background-color: #ddd
+}
+
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+
+.show {
+    display: block;
+}
