@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "us.macrotechsolutions.syncfast",
+            "sha256_cert_fingerprints": [
+                "54:42:50:8E:39:41:30:29:1C:17:6B:6D:36:3B:22:AF:CF:39:38:F7:2A:13:25:6F:4E:50:55:8A:82:6B:F0:F8"
+            ]
+        }
+    }
+]
