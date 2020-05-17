@@ -61,7 +61,7 @@ class Host extends React.Component {
                                 <div className="mx-auto features-icons-item">
                                     <div className="features-icons-icon"><GooglePicker className="m-auto" clientId={"510632149212-b3nju2fd9omib1l67qal0ot1214rr75s.apps.googleusercontent.com"}
                                         developerKey={'AIzaSyDhkJ2yT06tRwXIMEUp9xaj2-LxOnKyvGY'}
-                                        scope={['https://www.googleapis.com/auth/drive.file']}
+                                        scope={['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/presentations.readonly']}
                                         onChange={data => {
                                             if (data.action === "picked") {
                                                 this.pickerCallback(data);
