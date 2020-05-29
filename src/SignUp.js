@@ -156,7 +156,7 @@ class SignUp extends React.Component {
                         <GoogleLogin
                             clientId="510632149212-b3nju2fd9omib1l67qal0ot1214rr75s.apps.googleusercontent.com"
                             scope="profile email https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/presentations.readonly"
-                            buttonText="Sign in to SyncFast"
+                            buttonText="Sign in with Google"
                             onSuccess={this.onSuccess}
                             onFailure={this.onFailure}
                             cookiePolicy={'single_host_origin'}
