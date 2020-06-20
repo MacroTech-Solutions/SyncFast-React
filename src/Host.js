@@ -46,7 +46,7 @@ class Host extends React.Component {
         sessionStorage.setItem('presentationID', fileId)
         sessionStorage.setItem('accessKey', json.accesskey);
         sessionStorage.setItem('currentSlide', "0")
-        window.location.href = 'https://syncfast.macrotechsolutions.us/present'
+        window.location.href = 'present'
     }
 
     render() {

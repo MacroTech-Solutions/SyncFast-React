@@ -125,14 +125,14 @@ class SignUp extends React.Component {
                         </div>
                         <p id="error" style={{ color: 'white' }}>{this.state.errorText}</p>
                         <form>
-                            <div class="firstname">
+                            <div className="firstname">
                                 <input id="firstName" className="input" onChange={this.changeFirstName.bind(this)} placeholder="First name" />
                             </div>
-                            <div class="break"></div>
-                            <div class="lastname">
+                            <div className="break"></div>
+                            <div className="lastname">
                                 <input id="lastName" className="input" onChange={this.changeLastName.bind(this)} placeholder="Last name" />
                             </div>
-                            <div class="break"></div>
+                            <div className="break"></div>
                             <div className="email">
                                 <input id="emailInput" className="input" onChange={this.changeEmail.bind(this)} placeholder="email@example.com" />
                             </div>
@@ -140,8 +140,8 @@ class SignUp extends React.Component {
                             <div className="password">
                                 <input type="password" id="passwordInput" className="input" onChange={this.changePassword.bind(this)} placeholder="New Password" />
                             </div>
-                            <div class="break"></div>
-                            <div class="passwordCon">
+                            <div className="break"></div>
+                            <div className="passwordCon">
                                 <input type="password" className="input" id="passwordConfirm" onChange={this.changeConfirmPassword.bind(this)} placeholder="Confirm password" />
                             </div>
                             <div className="break" />
