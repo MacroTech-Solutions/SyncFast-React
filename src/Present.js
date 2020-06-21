@@ -477,6 +477,14 @@ class Present extends React.Component {
     }
   }
 
+  hideDropdown() {
+    if (this.state.dropdownDisplay == "block") {
+      this.setState({
+        dropdownDisplay: "none",
+      });
+    }
+  }
+
   copyLink() {
     navigator.clipboard
       .writeText(
@@ -507,7 +515,7 @@ class Present extends React.Component {
 
   render() {
     return (
-      <div>
+      <div onClick={this.hideDropdown.bind(this)}>
         <Websocket
           url="wss://syncfast.macrotechsolutions.us:4211"
           onMessage={this.handleData.bind(this)}
