@@ -10,6 +10,7 @@ import NextSlide from "./assets/nextSlide.png";
 import { Link } from "react-router-dom";
 import { gapi } from "gapi-script";
 import "./assets/css/slidesPresentStyles.css";
+import Websocket from "react-websocket";
 
 class Present extends React.Component {
   constructor(props) {
@@ -34,7 +35,7 @@ class Present extends React.Component {
       loading: "inline",
       slideDisplay: "none",
       dropdownDisplay: "none",
-      changeAccess: false
+      changeAccess: false,
     };
 
     this.updateSigninStatus = this.updateSigninStatus.bind(this);
@@ -409,34 +410,36 @@ class Present extends React.Component {
     }
   }
 
-  changeAccess(){
-    this.setState({changeAccess: true});
+  changeAccess() {
+    this.setState({ changeAccess: true });
   }
 
-  changeAccessKey(event){
+  changeAccessKey(event) {
     this.setState({ newCode: event.target.value });
   }
 
   async accessKeySubmitted(event) {
     event.preventDefault();
-    this.setState({changeAccess: false});
-    let result = "";
-    let response = await fetch({
-      method: "POST",
-      url:
-        "https://syncfast.macrotechsolutions.us:9146/http://localhost/changeAccessKey",
-      headers: {
-        "Content-Type": "application/json",
-        firebasepresentationkey: sessionStorage.getItem(
-          "firebasePresentationKey"
-        ),
-        newcode: this.state.newCode,
-      },
-    }).catch((err) => console.log(err));
-    let json = response.json();
-    console.log(json);
+    this.setState({ changeAccess: false });
+    let response = await fetch(
+      "https://syncfast.macrotechsolutions.us:9146/http://localhost/changeAccessKey",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          firebasepresentationkey: sessionStorage.getItem(
+            "firebasePresentationKey"
+          ),
+          newcode: this.state.newCode,
+        },
+      }
+    ).catch((err) => console.log(err));
+    let json = await response.json();
     if (json.data == "Success") {
       await sessionStorage.setItem("accessKey", this.state.newCode);
+      this.setState({
+        accessKey: this.state.newCode,
+      });
     } else {
       alert("This key has already been reserved.");
     }
@@ -488,9 +491,27 @@ class Present extends React.Component {
       );
   }
 
+  handleData(data) {
+    if (data === `next${sessionStorage.getItem("firebasePresentationKey")}`) {
+      this.nextSlide();
+    } else if (
+      data === `previous${sessionStorage.getItem("firebasePresentationKey")}`
+    ) {
+      this.previousSlide();
+    } else if (
+      data === `hostLock${sessionStorage.getItem("firebasePresentationKey")}`
+    ) {
+      this.lockAccess();
+    }
+  }
+
   render() {
     return (
       <div>
+        <Websocket
+          url="wss://syncfast.macrotechsolutions.us:4211"
+          onMessage={this.handleData.bind(this)}
+        />
         <div
           id="standardView"
           style={{
@@ -535,7 +556,9 @@ class Present extends React.Component {
                     className="toolsButton"
                     onClick={this.toggleNotes.bind(this)}
                   >
-                    {this.state.notesState == "none" ? "Show Speaker Notes" : "Hide Speaker Notes"}
+                    {this.state.notesState == "none"
+                      ? "Show Speaker Notes"
+                      : "Hide Speaker Notes"}
                   </button>
                   <button
                     id="newPres"
@@ -544,8 +567,14 @@ class Present extends React.Component {
                   >
                     New Presentation
                   </button>
-                  <button id="lock" className="toolsButton" onClick={this.lockAccess.bind(this)}>
-                    {this.state.lockState ? "Unlock Presentation" : "Lock Presentation"}
+                  <button
+                    id="lock"
+                    className="toolsButton"
+                    onClick={this.lockAccess.bind(this)}
+                  >
+                    {this.state.lockState
+                      ? "Unlock Presentation"
+                      : "Lock Presentation"}
                   </button>
                 </div>
               </div>
@@ -558,12 +587,33 @@ class Present extends React.Component {
               </button>
             </div>
             <div className="center">
-              <p id="access">Access Code: {!this.state.changeAccess ? this.state.accessKey : ""}</p>
-              <button id="change" onClick={this.changeAccess.bind(this)} style={{display: `${!this.state.changeAccess ? "inline" : "none"}`}}>Change</button>
-              <form id="changeKey" style={{display: `${this.state.changeAccess ? "inline" : "none"}`}}>
-                  <input onChange={this.changeAccessKey.bind(this)} placeholder="New Access Code"></input>
-                  <button onClick={this.accessKeySubmitted.bind(this)}>Submit</button>
-                </form>
+              <p id="access">
+                Access Code:{" "}
+                {!this.state.changeAccess ? this.state.accessKey : ""}
+              </p>
+              <button
+                id="change"
+                onClick={this.changeAccess.bind(this)}
+                style={{
+                  display: `${!this.state.changeAccess ? "inline" : "none"}`,
+                }}
+              >
+                Change
+              </button>
+              <form
+                id="changeKey"
+                style={{
+                  display: `${this.state.changeAccess ? "inline" : "none"}`,
+                }}
+              >
+                <input
+                  onChange={this.changeAccessKey.bind(this)}
+                  placeholder="New Access Code"
+                ></input>
+                <button onClick={this.accessKeySubmitted.bind(this)}>
+                  Submit
+                </button>
+              </form>
             </div>
             <div className="right">
               <button id="signOut" onClick={this.signOut.bind(this)}>
@@ -592,7 +642,14 @@ class Present extends React.Component {
                 }}
               />
             </div>
-            <div className="notes" style={{paddingLeft: "10vw", paddingRight: "10vw", display: `${this.state.notesState}`}}>
+            <div
+              className="notes"
+              style={{
+                paddingLeft: "10vw",
+                paddingRight: "10vw",
+                display: `${this.state.notesState}`,
+              }}
+            >
               <p>{this.state.notes}</p>
             </div>
             <div className="buttons">
