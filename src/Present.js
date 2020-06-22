@@ -117,14 +117,20 @@ class Present extends React.Component {
               const res = JSON.parse(response.body);
               try {
                 this.setState({
-                  notes: await res.slideProperties.notesPage.pageElements[1].shape.text.textElements.pop()
-                    .textRun.content,
+                  notes: "",
                 });
-                // notesSection.innerText = notes;
+                let notesElements = await res.slideProperties.notesPage
+                  .pageElements[1].shape.text.textElements;
+                await notesElements.forEach((i) => {
+                  if (i.textRun && i.textRun.content) {
+                    this.setState({
+                      notes: this.state.notes + i.textRun.content,
+                    });
+                  }
+                });
               } catch (e) {
                 console.log(e);
                 this.setState({ notes: "No notes available." });
-                // notesSection.innerText = this.state.notes;
               }
             });
           gapi.client.slides.presentations.pages
@@ -149,8 +155,9 @@ class Present extends React.Component {
                       ),
                       slideurl: this.state.slideUrl,
                       slidenum: sessionStorage.getItem("currentSlide"),
-                      notes: this.state.notes,
+                      
                     },
+                    body:JSON.stringify({notes: this.state.notes})
                   }
                 );
                 await fetch(
@@ -658,7 +665,7 @@ class Present extends React.Component {
                 display: `${this.state.notesState}`,
               }}
             >
-              <p>{this.state.notes}</p>
+              <pre>{this.state.notes}</pre>
             </div>
             <div className="buttons">
               <button
