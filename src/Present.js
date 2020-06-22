@@ -349,8 +349,8 @@ class Present extends React.Component {
                 ),
                 slidenum: sessionStorage.getItem("currentSlide"),
                 slideurl: this.state.slideUrl,
-                notes: this.state.notes,
               },
+              body:JSON.stringify({notes: this.state.notes})
             }
           );
         },
