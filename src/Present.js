@@ -155,9 +155,8 @@ class Present extends React.Component {
                       ),
                       slideurl: this.state.slideUrl,
                       slidenum: sessionStorage.getItem("currentSlide"),
-                      
                     },
-                    body:JSON.stringify({notes: this.state.notes})
+                    body: JSON.stringify({ notes: this.state.notes }),
                   }
                 );
                 await fetch(
@@ -312,9 +311,15 @@ class Present extends React.Component {
       .then(async (response) => {
         const res = JSON.parse(response.body);
         try {
-          this.setState({
-            notes: await res.slideProperties.notesPage.pageElements[1].shape.text.textElements.pop()
-              .textRun.content,
+          this.setState({notes: ""});
+          let notesElements = await res.slideProperties.notesPage
+            .pageElements[1].shape.text.textElements;
+          await notesElements.forEach((i) => {
+            if (i.textRun && i.textRun.content) {
+              this.setState({
+                notes: this.state.notes + i.textRun.content,
+              });
+            }
           });
           // this.notesSection.innerText = this.notes;
         } catch (e) {
@@ -350,7 +355,7 @@ class Present extends React.Component {
                 slidenum: sessionStorage.getItem("currentSlide"),
                 slideurl: this.state.slideUrl,
               },
-              body:JSON.stringify({notes: this.state.notes})
+              body: JSON.stringify({ notes: this.state.notes }),
             }
           );
         },
