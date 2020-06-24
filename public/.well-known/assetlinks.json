@@ -7,7 +7,8 @@
             "namespace": "android_app",
             "package_name": "us.macrotechsolutions.syncfast",
             "sha256_cert_fingerprints": [
-                "54:42:50:8E:39:41:30:29:1C:17:6B:6D:36:3B:22:AF:CF:39:38:F7:2A:13:25:6F:4E:50:55:8A:82:6B:F0:F8"
+                "54:42:50:8E:39:41:30:29:1C:17:6B:6D:36:3B:22:AF:CF:39:38:F7:2A:13:25:6F:4E:50:55:8A:82:6B:F0:F8",
+                "9F:C9:C9:D3:D7:9F:70:01:BC:E3:6B:E2:1E:2C:CA:67:4F:F5:0A:20:C4:5F:DD:E7:44:25:7F:E0:5E:D8:44:59"
             ]
         }
     }
