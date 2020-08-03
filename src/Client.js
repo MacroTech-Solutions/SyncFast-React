@@ -6,6 +6,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import $ from 'jquery';
 import Websocket from 'react-websocket';
+import RTCClientComponent from "./RTCClientComponent";
 
 
 class Error extends React.Component {
@@ -166,10 +167,11 @@ class Error extends React.Component {
     render() {
         return (
             <div>
+                 {this.state.firebasePresentationKey != "" ? <RTCClientComponent roomID={this.state.firebasePresentationKey}/> : <div></div>}
                 <Websocket url='wss://syncfast.macrotechsolutions.us:4211'
                     onMessage={this.handleData.bind(this)} />
                 <Header />
-                <div className="content">
+                <div className="clientContent">
                     <div id="error"></div>
                     <p id="accessKeyText">Enter Access Code:</p>
                     <form>

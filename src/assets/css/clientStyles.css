@@ -40,12 +40,12 @@ a {
     height: 10vh;
 }
 
-.content {
+.clientContent {
     display: flex;
     flex-flow: column;
     justify-content: flex-start;
     align-items: center;
-    height: 90vh;
+    height: 60vh;
 }
 
 #accessKeyText {

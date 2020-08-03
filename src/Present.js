@@ -3,6 +3,7 @@ import "./assets/fonts/fontawesome5-overrides.min.css";
 import "./assets/css/styles.min.css";
 import Logo from "./assets/img/syncfastlogo.png";
 import FullScreen from "./assets/full-screen-white.png";
+import Utility from "./assets/utility.png";
 import Loading from "./assets/loading.gif";
 import Sketch from "react-p5";
 import PreviousSlide from "./assets/previousSlide.png";
@@ -11,6 +12,8 @@ import { Link } from "react-router-dom";
 import { gapi } from "gapi-script";
 import "./assets/css/slidesPresentStyles.css";
 import Websocket from "react-websocket";
+import Footer from "./Footer";
+import RTCHostComponent from "./RTCHostComponent";
 
 class Present extends React.Component {
   constructor(props) {
@@ -28,6 +31,7 @@ class Present extends React.Component {
       lockState: true,
       notes: "No notes available.",
       notesState: "none",
+      voiceState: false,
       openURL: "",
       openQR: "",
       connected: false,
@@ -36,6 +40,7 @@ class Present extends React.Component {
       slideDisplay: "none",
       dropdownDisplay: "none",
       changeAccess: false,
+      rtcComponent: null,
     };
 
     this.updateSigninStatus = this.updateSigninStatus.bind(this);
@@ -311,7 +316,7 @@ class Present extends React.Component {
       .then(async (response) => {
         const res = JSON.parse(response.body);
         try {
-          this.setState({notes: ""});
+          this.setState({ notes: "" });
           let notesElements = await res.slideProperties.notesPage
             .pageElements[1].shape.text.textElements;
           await notesElements.forEach((i) => {
@@ -422,6 +427,14 @@ class Present extends React.Component {
     }
   }
 
+  toggleVoice() {
+    if (this.state.voiceState == false) {
+      this.setState({ voiceState: true });
+    } else {
+      this.setState({ voiceState: false });
+    }
+  }
+
   changeAccess() {
     this.setState({ changeAccess: true });
   }
@@ -471,10 +484,16 @@ class Present extends React.Component {
 
   standardScreen() {
     this.setState({ screenState: "standard" });
-    if (document.exitFullscreen) document.exitFullscreen();
-    else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-    else if (document.msExitFullscreen) document.msExitFullscreen();
+    console.log(document);
+    try {
+      if (document && document.exitFullscreen) document.exitFullscreen();
+      else if (document && document.mozCancelFullScreen)
+        document.mozCancelFullScreen();
+      else if (document && document.webkitExitFullscreen)
+        document.webkitExitFullscreen();
+      else if (document && document.msExitFullscreen)
+        document.msExitFullscreen();
+    } catch (error) {}
   }
 
   showDropdown() {
@@ -527,150 +546,205 @@ class Present extends React.Component {
 
   render() {
     return (
-      <div onClick={this.hideDropdown.bind(this)}>
-        <Websocket
-          url="wss://syncfast.macrotechsolutions.us:4211"
-          onMessage={this.handleData.bind(this)}
-        />
-        <div
-          id="standardView"
-          style={{
-            display: `${
-              this.state.screenState == "standard" ? "inline" : "none"
-            }`,
-          }}
-        >
-          <div className="nav" style={{ justifyContent: "space-between" }}>
-            <div className="left">
-              <Link to={"./"}>
-                <img id="logo" style={{ height: "100px" }} src={Logo} />
-              </Link>
-              <div className="dropdown">
+      
+      <div>
+        
+        <div onClick={this.hideDropdown.bind(this)}>
+          <Websocket
+            url="wss://syncfast.macrotechsolutions.us:4211"
+            onMessage={this.handleData.bind(this)}
+          />
+          <div
+            id="standardView"
+            style={{
+              display: `${
+                this.state.screenState == "standard" ? "inline" : "none"
+              }`,
+            }}
+          >
+            <div className="nav" style={{ justifyContent: "space-between" }}>
+              <div className="left">
+                <Link to={"./"}>
+                  <img id="logo" style={{ height: "100px" }} src={Logo} />
+                </Link>
+                <div className="dropdown">
+                  <button
+                    onClick={this.showDropdown.bind(this)}
+                    className="dropbtn"
+                  >
+                    <img src={Utility} height={40} width={40} />
+                  </button>
+                  <div
+                    id="myDropdown"
+                    className="dropdown-content"
+                    style={{ display: `${this.state.dropdownDisplay}` }}
+                  >
+                    <button
+                      id="copyLink"
+                      className="toolsButton"
+                      onClick={this.copyLink.bind(this)}
+                    >
+                      Copy Link
+                    </button>
+                    <button
+                      id="qrCodeBtn"
+                      className="toolsButton"
+                      onClick={this.openQRCodePres.bind(this)}
+                    >
+                      Show QR
+                    </button>
+                    <button
+                      id="notesButton"
+                      className="toolsButton"
+                      onClick={this.toggleNotes.bind(this)}
+                    >
+                      {this.state.notesState == "none"
+                        ? "Show Speaker Notes"
+                        : "Hide Speaker Notes"}
+                    </button>
+                    <button
+                      id="newPres"
+                      className="toolsButton"
+                      onClick={this.newPres.bind(this)}
+                    >
+                      New Presentation
+                    </button>
+                    <button
+                      id="lock"
+                      className="toolsButton"
+                      onClick={this.lockAccess.bind(this)}
+                    >
+                      {this.state.lockState
+                        ? "Unlock Presentation"
+                        : "Lock Presentation"}
+                    </button>
+                  </div>
+                </div>
+                <RTCHostComponent
+                      roomID={sessionStorage.getItem("firebasePresentationKey")} audio={true} video={false}
+                    />
                 <button
-                  onClick={this.showDropdown.bind(this)}
-                  className="dropbtn"
+                  id="fullScreen"
+                  className="button3"
+                  onClick={this.fullScreen.bind(this)}
                 >
-                  Tools
+                  <img src={FullScreen} height={40} width={40} />
                 </button>
-                <div
-                  id="myDropdown"
-                  className="dropdown-content"
-                  style={{ display: `${this.state.dropdownDisplay}` }}
+              </div>
+              <div className="center">
+                <p id="access">
+                  Access Code:{" "}
+                  {!this.state.changeAccess ? this.state.accessKey : ""}
+                </p>
+                <button
+                  id="change"
+                  onClick={this.changeAccess.bind(this)}
+                  style={{
+                    display: `${!this.state.changeAccess ? "inline" : "none"}`,
+                  }}
                 >
-                  <button
-                    id="copyLink"
-                    className="toolsButton"
-                    onClick={this.copyLink.bind(this)}
-                  >
-                    Copy Link
+                  Change
+                </button>
+                <form
+                  id="changeKey"
+                  style={{
+                    display: `${this.state.changeAccess ? "inline" : "none"}`,
+                  }}
+                >
+                  <input
+                    onChange={this.changeAccessKey.bind(this)}
+                    placeholder="New Access Code"
+                  ></input>
+                  <button onClick={this.accessKeySubmitted.bind(this)}>
+                    Submit
                   </button>
-                  <button
-                    id="qrCodeBtn"
-                    className="toolsButton"
-                    onClick={this.openQRCodePres.bind(this)}
-                  >
-                    Show QR
-                  </button>
-                  <button
-                    id="notesButton"
-                    className="toolsButton"
-                    onClick={this.toggleNotes.bind(this)}
-                  >
-                    {this.state.notesState == "none"
-                      ? "Show Speaker Notes"
-                      : "Hide Speaker Notes"}
-                  </button>
-                  <button
-                    id="newPres"
-                    className="toolsButton"
-                    onClick={this.newPres.bind(this)}
-                  >
-                    New Presentation
-                  </button>
-                  <button
-                    id="lock"
-                    className="toolsButton"
-                    onClick={this.lockAccess.bind(this)}
-                  >
-                    {this.state.lockState
-                      ? "Unlock Presentation"
-                      : "Lock Presentation"}
-                  </button>
+                </form>
+              </div>
+              <div className="right">
+                <button id="signOut" onClick={this.signOut.bind(this)}>
+                  Sign Out
+                </button>
+                <div className="userPicture">
+                  <img
+                    id="userPic"
+                    src={sessionStorage.getItem("profilePic")}
+                  />
                 </div>
               </div>
-              <button
-                id="fullScreen"
-                className="button3"
-                onClick={this.fullScreen.bind(this)}
-              >
-                <img src={FullScreen} height={40} width={40} />
-              </button>
             </div>
-            <div className="center">
-              <p id="access">
-                Access Code:{" "}
-                {!this.state.changeAccess ? this.state.accessKey : ""}
-              </p>
-              <button
-                id="change"
-                onClick={this.changeAccess.bind(this)}
+            <div className="break"> </div>
+            <div className="content">
+              <div className="img">
+                <img
+                  id="loading"
+                  src={Loading}
+                  style={{ display: `${this.state.loading}` }}
+                />
+                <img
+                  id="presImg"
+                  src={this.state.slideUrl}
+                  style={{
+                    display: `${this.state.slideDisplay}`,
+                    width: "60vw",
+                    height: "auto",
+                  }}
+                />
+              </div>
+              <div
+                className="notes"
                 style={{
-                  display: `${!this.state.changeAccess ? "inline" : "none"}`,
+                  paddingLeft: "10vw",
+                  paddingRight: "10vw",
+                  display: `${this.state.notesState}`,
                 }}
               >
-                Change
-              </button>
-              <form
-                id="changeKey"
-                style={{
-                  display: `${this.state.changeAccess ? "inline" : "none"}`,
-                }}
-              >
-                <input
-                  onChange={this.changeAccessKey.bind(this)}
-                  placeholder="New Access Code"
-                ></input>
-                <button onClick={this.accessKeySubmitted.bind(this)}>
-                  Submit
+                <pre>{this.state.notes}</pre>
+              </div>
+              <div className="buttons">
+                <button
+                  id="prevSlide"
+                  className="button2"
+                  className="arrow"
+                  onClick={this.previousSlide.bind(this)}
+                >
+                  <img src={PreviousSlide} height={40} width={40} />
                 </button>
-              </form>
-            </div>
-            <div className="right">
-              <button id="signOut" onClick={this.signOut.bind(this)}>
-                Sign Out
-              </button>
-              <div className="userPicture">
-                <img id="userPic" src={sessionStorage.getItem("profilePic")} />
+                <button
+                  id="nextSlide"
+                  className="button2"
+                  className="arrow"
+                  onClick={this.nextSlide.bind(this)}
+                >
+                  <img src={NextSlide} height={40} width="40/" />
+                </button>
               </div>
             </div>
           </div>
-          <div className="break"> </div>
-          <div className="content">
-            <div className="img">
-              <img
-                id="loading"
-                src={Loading}
-                style={{ display: `${this.state.loading}` }}
-              />
-              <img
-                id="presImg"
-                src={this.state.slideUrl}
-                style={{
-                  display: `${this.state.slideDisplay}`,
-                  width: "60vw",
-                  height: "auto",
-                }}
-              />
-            </div>
-            <div
-              className="notes"
-              style={{
-                paddingLeft: "10vw",
-                paddingRight: "10vw",
-                display: `${this.state.notesState}`,
-              }}
-            >
-              <pre>{this.state.notes}</pre>
+          <div
+            id="fullView"
+            style={{
+              display: `${
+                this.state.screenState == "full" ? "inline" : "none"
+              }`,
+            }}
+          >
+            <div className="content">
+              <div className="img2">
+                <img
+                  id="loading"
+                  src={Loading}
+                  style={{ display: `${this.state.loading}` }}
+                />
+                <img
+                  id="presImg"
+                  src={this.state.slideUrl}
+                  style={{
+                    display: `${this.state.slideDisplay}`,
+                    width: "100vw",
+                    height: "auto",
+                  }}
+                />
+              </div>
             </div>
             <div className="buttons">
               <button
@@ -689,70 +763,32 @@ class Present extends React.Component {
               >
                 <img src={NextSlide} height={40} width="40/" />
               </button>
+              <button
+                id="fullScreen"
+                className="button3"
+                onClick={this.standardScreen.bind(this)}
+              >
+                <img src={FullScreen} height={40} width={40} />
+              </button>
             </div>
           </div>
+          {/* <Sketch
+            setup={(p5, parent) => {}}
+            draw={(p5) => {}}
+            keyPressed={(p5) => {
+              if (p5.keyCode === p5.LEFT_ARROW) {
+                this.previousSlide.bind(this);
+              } else if (p5.keyCode === p5.RIGHT_ARROW) {
+                this.nextSlide.bind(this);
+              } else if (p5.keyCode === p5.ESCAPE) {
+                // if(this.state.screenState == "full"){
+                //   this.standardScreen.bind(this);
+                // }
+              }
+            }}
+          /> */}
         </div>
-        <div
-          id="fullView"
-          style={{
-            display: `${this.state.screenState == "full" ? "inline" : "none"}`,
-          }}
-        >
-          <div className="content">
-            <div className="img2">
-              <img
-                id="loading"
-                src={Loading}
-                style={{ display: `${this.state.loading}` }}
-              />
-              <img
-                id="presImg"
-                src={this.state.slideUrl}
-                style={{
-                  display: `${this.state.slideDisplay}`,
-                  width: "100vw",
-                  height: "auto",
-                }}
-              />
-            </div>
-          </div>
-          <div className="buttons">
-            <button
-              id="prevSlide"
-              className="button2"
-              className="arrow"
-              onClick={this.previousSlide.bind(this)}
-            >
-              <img src={PreviousSlide} height={40} width={40} />
-            </button>
-            <button
-              id="nextSlide"
-              className="button2"
-              className="arrow"
-              onClick={this.nextSlide.bind(this)}
-            >
-              <img src={NextSlide} height={40} width="40/" />
-            </button>
-            <button
-              id="fullScreen"
-              className="button3"
-              onClick={this.standardScreen.bind(this)}
-            >
-              <img src={FullScreen} height={40} width={40} />
-            </button>
-          </div>
-        </div>
-        <Sketch
-          setup={(p5, parent) => {}}
-          draw={(p5) => {}}
-          keyPressed={(p5) => {
-            if (p5.keyCode === p5.LEFT_ARROW) {
-              this.previousSlide();
-            } else if (p5.keyCode === p5.RIGHT_ARROW) {
-              this.nextSlide();
-            }
-          }}
-        />
+        <Footer />
       </div>
     );
   }
