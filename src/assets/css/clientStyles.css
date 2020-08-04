@@ -22,6 +22,8 @@ a {
     margin-top: 20px;
     color: white;
     font-weight: bold;
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
 #logo {
@@ -45,7 +47,6 @@ a {
     flex-flow: column;
     justify-content: flex-start;
     align-items: center;
-    height: 60vh;
 }
 
 #accessKeyText {
@@ -62,6 +63,31 @@ a {
     font-family: 'Karla', sans-serif;
 }
 
+#clientContent{
+    display: flex;
+    flex-direction: row;
+}
+
+.clientButtons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#clientMicBtn{
+    border-radius: 22px;
+    border: none;
+    background-color: rgb(0, 123, 255);
+    border: solid black;
+    border-radius: 25px;
+    margin-top: 20px;
+    color: white;
+    font-weight: bold;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
 
 /* #submit {
     margin-top: 20px;
@@ -74,6 +100,19 @@ a {
     #presImg {
         width: auto;
         height: 85vh;
+        margin-right: 20px;
+    }
+
+    #clientContent{
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .clientButtons{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
     }
 }
 
@@ -81,5 +120,11 @@ a {
     #presImg {
         width: 85vw;
         height: auto;
+        margin-right: 20px;
     }
 }
+#presImg{
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+

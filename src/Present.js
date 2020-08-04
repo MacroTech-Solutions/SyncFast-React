@@ -191,6 +191,19 @@ class Present extends React.Component {
                     },
                   }
                 );
+                await fetch(
+                  "https://syncfast.macrotechsolutions.us:9146/http://localhost/clientMic",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      firebasepresentationkey: sessionStorage.getItem(
+                        "firebasePresentationKey"
+                      ),
+                      clientmic: "false"
+                    },
+                  }
+                );
                 this.setState({
                   loading: "none",
                 });
@@ -623,13 +636,7 @@ class Present extends React.Component {
                 <RTCHostComponent
                       roomID={sessionStorage.getItem("firebasePresentationKey")} audio={true} video={false}
                     />
-                <button
-                  id="fullScreen"
-                  className="button3"
-                  onClick={this.fullScreen.bind(this)}
-                >
-                  <img src={FullScreen} height={40} width={40} />
-                </button>
+                
               </div>
               <div className="center">
                 <p id="access">
@@ -661,6 +668,13 @@ class Present extends React.Component {
                 </form>
               </div>
               <div className="right">
+              <button
+                  id="fullScreen"
+                  className="button3"
+                  onClick={this.fullScreen.bind(this)}
+                >
+                  <img src={FullScreen} height={40} width={40} />
+                </button>
                 <button id="signOut" onClick={this.signOut.bind(this)}>
                   Sign Out
                 </button>
@@ -772,21 +786,21 @@ class Present extends React.Component {
               </button>
             </div>
           </div>
-          {/* <Sketch
-            setup={(p5, parent) => {}}
+          <Sketch
+            setup={(p5, parent) => {p5.createCanvas(0,0);}}
             draw={(p5) => {}}
             keyPressed={(p5) => {
               if (p5.keyCode === p5.LEFT_ARROW) {
-                this.previousSlide.bind(this);
+                this.previousSlide();
               } else if (p5.keyCode === p5.RIGHT_ARROW) {
-                this.nextSlide.bind(this);
+                this.nextSlide();
               } else if (p5.keyCode === p5.ESCAPE) {
-                // if(this.state.screenState == "full"){
-                //   this.standardScreen.bind(this);
-                // }
+                if(this.state.screenState == "full"){
+                  this.standardScreen();
+                }
               }
             }}
-          /> */}
+          />
         </div>
         <Footer />
       </div>

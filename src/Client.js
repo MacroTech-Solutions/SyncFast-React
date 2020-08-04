@@ -9,7 +9,7 @@ import Websocket from 'react-websocket';
 import RTCClientComponent from "./RTCClientComponent";
 
 
-class Error extends React.Component {
+class Client extends React.Component {
 
     constructor(props) {
         super(props);
@@ -21,6 +21,7 @@ class Error extends React.Component {
                 errorText: "",
                 firebasePresentationKey: "",
                 slideUrl: "",
+                clientMic: ""
             }
             this.submitKey();
         } else{
@@ -29,6 +30,7 @@ class Error extends React.Component {
                 errorText: "",
                 firebasePresentationKey: "",
                 slideUrl: "",
+                clientMic: ""
             }
         }
     }
@@ -40,6 +42,7 @@ class Error extends React.Component {
 
         }
         let accessCode = this.state.accessKey;
+        console.log(accessCode);
         let response = await fetch('https://syncfast.macrotechsolutions.us:9146/http://localhost/clientJoin', {
             method: 'POST',
             headers: {
@@ -49,7 +52,7 @@ class Error extends React.Component {
         })
             .catch(err => console.log(err))
         let result = await response.json();
-        if (result.data === "Incorrect Access Code") {
+        if (result.data === "Incorrect Access Code" || accessCode == "") {
             alert("Invalid Access Code");
         } else {
             this.setState({ errorText: "" });
@@ -147,14 +150,16 @@ class Error extends React.Component {
     lockScreen() {
         this.state.lockState = true;
         $(document).ready(function () {
-            $(".buttons").css("display", "none");
+            $("#prevSlide").css("display", "none");
+            $("#nextSlide").css("display", "none");
         });
     }
 
     unlockScreen() {
         this.state.lockState = false;
         $(document).ready(function () {
-            $(".buttons").css("display", "inline");
+            $("#prevSlide").css("display", "inline");
+            $("#nextSlide").css("display", "inline");
         });
     }
 
@@ -167,10 +172,9 @@ class Error extends React.Component {
     render() {
         return (
             <div>
-                 {this.state.firebasePresentationKey != "" ? <RTCClientComponent roomID={this.state.firebasePresentationKey}/> : <div></div>}
                 <Websocket url='wss://syncfast.macrotechsolutions.us:4211'
                     onMessage={this.handleData.bind(this)} />
-                <Header />
+               <Header />
                 <div className="clientContent">
                     <div id="error"></div>
                     <p id="accessKeyText">Enter Access Code:</p>
@@ -179,10 +183,14 @@ class Error extends React.Component {
                         <button id="submit" className="button" onClick={this.submitKey.bind(this)}>Submit</button>
                     </form>
                     <div className="img"> </div>
+                    <div id="clientContent">
                     <img id="presImg" src={this.state.slideUrl} title={this.state.presentationTitle} style={{ display: "none", width: "80vw", height: "auto" }}></img>
-                    <div className="buttons" style={{ display: "none" }}>
-                        <button id="prevSlide" className="button" onClick={this.previousSlide.bind(this)}>Previous Slide</button>
-                        <button id="nextSlide" className="button" onClick={this.nextSlide.bind(this)}>Next Slide</button>
+                    <div className="clientButtons">
+                    {this.state.firebasePresentationKey != "" ? <RTCClientComponent style={{ display: "none" }} className="button" roomID={this.state.firebasePresentationKey} accessCode={this.state.accessKey} firebasePresentationKey={this.state.firebasePresentationKey}/> : <div></div>}
+                    <button id="nextSlide"  style={{ display: "none" }} className="button" onClick={this.nextSlide.bind(this)}>Next Slide</button>
+                        <button id="prevSlide"  style={{ display: "none" }} className="button" onClick={this.previousSlide.bind(this)}>Previous Slide</button>
+                        
+                    </div>
                     </div>
 
                 </div>
@@ -193,4 +201,4 @@ class Error extends React.Component {
 
 }
 
-export default Error;
+export default Client;

@@ -3,6 +3,8 @@ import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
 import Mic from "./assets/mic.png";
+import Unmute from "./assets/unmute.png";
+import DownArrow from "./assets/downArrow.png";
 
 const StyledVideo = styled.video`
   height: 40%;
@@ -31,7 +33,9 @@ const videoConstraints = {
 const RTCHostComponent = (props) => {
   const [peers, setPeers] = useState([]);
   const [voiceState, setVoiceState] = useState(false);
+  const [viewerState, setViewerState] = useState(false);
   const [dropdownDisplay, setDropdownDisplay] = useState(false);
+  const [init, setInit] = useState(true);
 
   const socketRef = useRef();
   const userVideo = useRef();
@@ -39,56 +43,57 @@ const RTCHostComponent = (props) => {
   const roomID = props.roomID;
 
   useEffect(() => {
-    console.log(voiceState);
-    if (voiceState) {
-      if (userVideo.current.srcObject) {
+    async function startFunction() {
+      socketRef.current = io.connect(
+        "wss://syncfast.macrotechsolutions.us:5240"
+      );
+      await navigator.mediaDevices
+        .getUserMedia({ video: false, audio: true })
+        .then((stream) => {
+          userVideo.current.srcObject = stream;
+          socketRef.current.emit("join room", roomID);
+          socketRef.current.on("all users", (users) => {
+            const peers = [];
+            users.forEach((userID) => {
+              const peer = createPeer(userID, socketRef.current.id, stream);
+              peersRef.current.push({
+                peerID: userID,
+                peer,
+              });
+              peers.push(peer);
+            });
+            setPeers(peers);
+          });
+
+          socketRef.current.on("user joined", (payload) => {
+            const item = peersRef.current.find(
+              (p) => p.peerID === payload.callerID
+            );
+            if (!item) {
+              const peer = addPeer(payload.signal, payload.callerID, stream);
+              peersRef.current.push({
+                peerID: payload.callerID,
+                peer,
+              });
+              setPeers((users) => [...users, peer]);
+            }
+          });
+
+          socketRef.current.on("receiving returned signal", (payload) => {
+            const item = peersRef.current.find((p) => p.peerID === payload.id);
+            item.peer.signal(payload.signal);
+          });
+        });
+      userVideo.current.srcObject.getTracks()[0].enabled = false;
+    }
+
+    if (init) {
+      startFunction();
+      setInit(false);
+    } else {
+      if (voiceState) {
         userVideo.current.srcObject.getTracks()[0].enabled = true;
       } else {
-        socketRef.current = io.connect(
-          "wss://syncfast.macrotechsolutions.us:5240"
-        );
-        navigator.mediaDevices
-          .getUserMedia({ video: false, audio: true })
-          .then((stream) => {
-            userVideo.current.srcObject = stream;
-            socketRef.current.emit("join room", roomID);
-            socketRef.current.on("all users", (users) => {
-              const peers = [];
-              users.forEach((userID) => {
-                const peer = createPeer(userID, socketRef.current.id, stream);
-                peersRef.current.push({
-                  peerID: userID,
-                  peer,
-                });
-                peers.push(peer);
-              });
-              setPeers(peers);
-            });
-
-            socketRef.current.on("user joined", (payload) => {
-              const item = peersRef.current.find(
-                (p) => p.peerID === payload.callerID
-              );
-              if (!item) {
-                const peer = addPeer(payload.signal, payload.callerID, stream);
-                peersRef.current.push({
-                  peerID: payload.callerID,
-                  peer,
-                });
-                setPeers((users) => [...users, peer]);
-              }
-            });
-
-            socketRef.current.on("receiving returned signal", (payload) => {
-              const item = peersRef.current.find(
-                (p) => p.peerID === payload.id
-              );
-              item.peer.signal(payload.signal);
-            });
-          });
-      }
-    } else {
-      if (userVideo.current.srcObject) {
         userVideo.current.srcObject.getTracks()[0].enabled = false;
       }
     }
@@ -138,39 +143,87 @@ const RTCHostComponent = (props) => {
 
   function hideDropdown() {
     if (dropdownDisplay == "block") {
-        setDropdownDisplay("none");
+      setDropdownDisplay("none");
+    }
+  }
+
+  async function toggleClientMic() {
+    if (viewerState == false) {
+      setViewerState(true);
+      await fetch(
+        "https://syncfast.macrotechsolutions.us:9146/http://localhost/clientMic",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            firebasepresentationkey: sessionStorage.getItem(
+              "firebasePresentationKey"
+            ),
+            clientmic: "true",
+          },
+        }
+      );
+    } else {
+      setViewerState(false);
+      await fetch(
+        "https://syncfast.macrotechsolutions.us:9146/http://localhost/clientMic",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            firebasepresentationkey: sessionStorage.getItem(
+              "firebasePresentationKey"
+            ),
+            clientmic: "false",
+          },
+        }
+      );
     }
   }
 
   return (
     <div>
-      <div className="dropdown">
+      <div id="micGroup">
         <button
           onClick={() => {
-            showDropdown();
+            if (voiceState == false) {
+              setVoiceState(true);
+            } else {
+              setVoiceState(false);
+            }
           }}
-          className="dropbtn"
+          className="micbtn"
         >
-          <img src={Mic} height={40} width={40} />
+          <img src={!voiceState ? Mic : Unmute} height={40} width={40} />
+          {!voiceState ? "Unmute" : "Mute"}
         </button>
-        <div
-          id="myDropdown"
-          className="dropdown-content"
-          style={{ display: `${dropdownDisplay}` }}
-        >
+
+        <div className="dropdown">
           <button
-            id="voiceButton"
-            className="toolsButton"
             onClick={() => {
-              if (voiceState == false) {
-                setVoiceState(true);
-              } else {
-                setVoiceState(false);
-              }
+              showDropdown();
             }}
+            className="dropbtn2"
           >
-            {!voiceState ? "Enable Voice Channel" : "Disable Voice Channel"}
+            <img src={DownArrow} height={40} width={40} />
           </button>
+          <div
+            id="myDropdown"
+            className="dropdown-content"
+            style={{ display: `${dropdownDisplay}` }}
+          >
+            <button
+              id="voiceButton"
+              className="toolsButton"
+              onClick={() => {
+                toggleClientMic();
+              }}
+            >
+              {!viewerState
+                ? "Enable Viewer Microphones"
+                : "Disable Viewer Microphones"}
+            </button>
+          </div>
         </div>
       </div>
 
