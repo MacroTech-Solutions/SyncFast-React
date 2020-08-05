@@ -39,8 +39,8 @@ function Home() {
         <section style={{backgroundColor: 'rgb(248,249,250)'}}>
           <div className="container">
             <div className="row"  style={{display: 'flex', justifyContent: 'center', alignItems: 'stretch'}}>
-              <div className="col-lg-4 d-flex justify-content-center align-items-center"><a href="https://apps.apple.com/us/app/syncfast/id1509737904"><img src={AppStore} style={{ width: '239px' }}></img></a></div>
-              <div className="col-lg-4"><a className="d-flex justify-content-center align-items-center" href="https://play.google.com/store/apps/details?id=us.macrotechsolutions.syncfast&amp;pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"><img className="d-flex justify-content-center align-items-center" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" style={{ width: '298px' }}></img></a></div>
+              <div className="col-lg-4 d-flex justify-content-center align-items-center"><a href="https://apps.apple.com/us/app/syncfast/id1509737904"><img alt="App Store Logo" src={AppStore} style={{ width: '239px' }}></img></a></div>
+              <div className="col-lg-4"><a className="d-flex justify-content-center align-items-center" href="https://play.google.com/store/apps/details?id=us.macrotechsolutions.syncfast&amp;pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"><img alt="Play Store Logo" className="d-flex justify-content-center align-items-center" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" style={{ width: '298px' }}></img></a></div>
             </div>
           </div>
         </section>

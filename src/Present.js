@@ -224,6 +224,12 @@ class Present extends React.Component {
                   accessKey: sessionStorage.getItem("accessKey"),
                 });
                 // document.querySelector(".center").prepend(p);
+                if(sessionStorage.getItem("reload") != "done"){
+                  sessionStorage.setItem("reload", "done");
+                  window.location.reload();
+                } else{
+                  sessionStorage.removeItem("reload");
+                }
               },
               function (response) {
                 console.log("Error: " + response.result.error.message);
@@ -433,7 +439,7 @@ class Present extends React.Component {
   }
 
   toggleNotes() {
-    if (this.state.notesState == "none") {
+    if (this.state.notesState === "none") {
       this.setState({ notesState: "block" });
     } else {
       this.setState({ notesState: "none" });
@@ -441,7 +447,7 @@ class Present extends React.Component {
   }
 
   toggleVoice() {
-    if (this.state.voiceState == false) {
+    if (this.state.voiceState === false) {
       this.setState({ voiceState: true });
     } else {
       this.setState({ voiceState: false });
@@ -473,7 +479,7 @@ class Present extends React.Component {
       }
     ).catch((err) => console.log(err));
     let json = await response.json();
-    if (json.data == "Success") {
+    if (json.data === "Success") {
       await sessionStorage.setItem("accessKey", this.state.newCode);
       this.setState({
         accessKey: this.state.newCode,
@@ -510,7 +516,7 @@ class Present extends React.Component {
   }
 
   showDropdown() {
-    if (this.state.dropdownDisplay == "block") {
+    if (this.state.dropdownDisplay === "block") {
       this.setState({
         dropdownDisplay: "none",
       });
@@ -522,7 +528,7 @@ class Present extends React.Component {
   }
 
   hideDropdown() {
-    if (this.state.dropdownDisplay == "block") {
+    if (this.state.dropdownDisplay === "block") {
       this.setState({
         dropdownDisplay: "none",
       });
@@ -571,21 +577,21 @@ class Present extends React.Component {
             id="standardView"
             style={{
               display: `${
-                this.state.screenState == "standard" ? "inline" : "none"
+                this.state.screenState === "standard" ? "inline" : "none"
               }`,
             }}
           >
             <div className="nav" style={{ justifyContent: "space-between" }}>
               <div className="left">
                 <Link to={"./"}>
-                  <img id="logo" style={{ height: "100px" }} src={Logo} />
+                  <img alt="SyncFast Logo" id="logo" style={{ height: "100px" }} src={Logo} />
                 </Link>
                 <div className="dropdown">
                   <button
                     onClick={this.showDropdown.bind(this)}
                     className="dropbtn"
                   >
-                    <img src={Utility} height={40} width={40} />
+                    <img alt="Tools" src={Utility} height={40} width={40} />
                   </button>
                   <div
                     id="myDropdown"
@@ -611,7 +617,7 @@ class Present extends React.Component {
                       className="toolsButton"
                       onClick={this.toggleNotes.bind(this)}
                     >
-                      {this.state.notesState == "none"
+                      {this.state.notesState === "none"
                         ? "Show Speaker Notes"
                         : "Hide Speaker Notes"}
                     </button>
@@ -673,13 +679,13 @@ class Present extends React.Component {
                   className="button3"
                   onClick={this.fullScreen.bind(this)}
                 >
-                  <img src={FullScreen} height={40} width={40} />
+                  <img alt="Full Screen" src={FullScreen} height={40} width={40} />
                 </button>
                 <button id="signOut" onClick={this.signOut.bind(this)}>
                   Sign Out
                 </button>
                 <div className="userPicture">
-                  <img
+                  <img alt="Profile"
                     id="userPic"
                     src={sessionStorage.getItem("profilePic")}
                   />
@@ -689,12 +695,12 @@ class Present extends React.Component {
             <div className="break"> </div>
             <div className="content">
               <div className="img">
-                <img
+                <img alt="Loading"
                   id="loading"
                   src={Loading}
                   style={{ display: `${this.state.loading}` }}
                 />
-                <img
+                <img alt="Slide"
                   id="presImg"
                   src={this.state.slideUrl}
                   style={{
@@ -717,7 +723,6 @@ class Present extends React.Component {
               <div className="buttons">
                 <button
                   id="prevSlide"
-                  className="button2"
                   className="arrow"
                   onClick={this.previousSlide.bind(this)}
                 >
@@ -725,7 +730,6 @@ class Present extends React.Component {
                 </button>
                 <button
                   id="nextSlide"
-                  className="button2"
                   className="arrow"
                   onClick={this.nextSlide.bind(this)}
                 >

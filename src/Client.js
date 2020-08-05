@@ -52,7 +52,7 @@ class Client extends React.Component {
         })
             .catch(err => console.log(err))
         let result = await response.json();
-        if (result.data === "Incorrect Access Code" || accessCode == "") {
+        if (result.data === "Incorrect Access Code" || accessCode === "") {
             alert("Invalid Access Code");
         } else {
             this.setState({ errorText: "" });
@@ -148,7 +148,7 @@ class Client extends React.Component {
     }
 
     lockScreen() {
-        this.state.lockState = true;
+        this.setState({'lockState': true});
         $(document).ready(function () {
             $("#prevSlide").css("display", "none");
             $("#nextSlide").css("display", "none");
@@ -156,7 +156,7 @@ class Client extends React.Component {
     }
 
     unlockScreen() {
-        this.state.lockState = false;
+        this.setState({'lockState': false});
         $(document).ready(function () {
             $("#prevSlide").css("display", "inline");
             $("#nextSlide").css("display", "inline");
@@ -184,9 +184,9 @@ class Client extends React.Component {
                     </form>
                     <div className="img"> </div>
                     <div id="clientContent">
-                    <img id="presImg" src={this.state.slideUrl} title={this.state.presentationTitle} style={{ display: "none", width: "80vw", height: "auto" }}></img>
+                    <img id="presImg" alt="Slide" src={this.state.slideUrl} title={this.state.presentationTitle} style={{ display: "none", width: "80vw", height: "auto" }}></img>
                     <div className="clientButtons">
-                    {this.state.firebasePresentationKey != "" ? <RTCClientComponent style={{ display: "none" }} className="button" roomID={this.state.firebasePresentationKey} accessCode={this.state.accessKey} firebasePresentationKey={this.state.firebasePresentationKey}/> : <div></div>}
+                    {this.state.firebasePresentationKey !== "" ? <RTCClientComponent style={{ display: "none" }} className="button" roomID={this.state.firebasePresentationKey} accessCode={this.state.accessKey} firebasePresentationKey={this.state.firebasePresentationKey}/> : <div></div>}
                     <button id="nextSlide"  style={{ display: "none" }} className="button" onClick={this.nextSlide.bind(this)}>Next Slide</button>
                         <button id="prevSlide"  style={{ display: "none" }} className="button" onClick={this.previousSlide.bind(this)}>Previous Slide</button>
                         
