@@ -126,6 +126,14 @@
   a {
       color: black;
   }
+
+  #appleid-signin:hover{
+    cursor: pointer;
+  }
+
+  #appleid-signin{
+      outline: none;
+}
   
   @media (max-width: 950px) {
       .box {

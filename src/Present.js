@@ -14,6 +14,7 @@ import "./assets/css/slidesPresentStyles.css";
 import Websocket from "react-websocket";
 import Footer from "./Footer";
 import RTCHostComponent from "./RTCHostComponent";
+import DefaultProfile from "./assets/default.png"
 
 class Present extends React.Component {
   constructor(props) {
@@ -687,7 +688,7 @@ class Present extends React.Component {
                 <div className="userPicture">
                   <img alt="Profile"
                     id="userPic"
-                    src={sessionStorage.getItem("profilePic")}
+                    src={sessionStorage.getItem("profilePic") != "assets/default.png" ? sessionStorage.getItem("profilePic") : DefaultProfile}
                   />
                 </div>
               </div>
