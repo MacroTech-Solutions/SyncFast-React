@@ -245,7 +245,7 @@ class Present extends React.Component {
 
   openQRCodePres() {
     window.open(
-      "https://api.qrserver.com/v1/create-qr-code/?data=https://syncfast.macrotechsolutions.us/client.html?accessKey=" +
+      "https://api.qrserver.com/v1/create-qr-code/?data=https://syncfast.macrotechsolutions.us/client?accessKey=" +
         sessionStorage.getItem("accessKey") +
         "&size=600x600",
       "QR Code",
