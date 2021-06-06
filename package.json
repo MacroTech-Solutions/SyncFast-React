@@ -23,7 +23,7 @@
     "react-scripts": "^4.0.3",
     "react-websocket": "^2.1.0",
     "scriptjs": "^2.5.9",
-    "simple-peer": "^9.9.3",
+    "simple-peer": "^9.11.0",
     "socket.io-client": "^4.0.0",
     "styled-components": "^5.2.1"
   },
